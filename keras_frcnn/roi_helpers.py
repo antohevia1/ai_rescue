@@ -250,7 +250,7 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
 
             anchor_x = (anchor_size * anchor_ratio[0])/C.rpn_stride
             anchor_y = (anchor_size * anchor_ratio[1])/C.rpn_stride
-            if dim_ordering == 'channels_last':
+            if dim_ordering == 'channels_first':
                 regr = regr_layer[0, 4 * curr_layer:4 * curr_layer + 4, :, :]
             else:
                 regr = regr_layer[0, :, :, 4 * curr_layer:4 * curr_layer + 4]
@@ -266,6 +266,7 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
             if use_regr:
                 A[:, :, :, curr_layer] = apply_regr_np(A[:, :, :, curr_layer], regr)
 
+
             A[2, :, :, curr_layer] = np.maximum(1, A[2, :, :, curr_layer])
             A[3, :, :, curr_layer] = np.maximum(1, A[3, :, :, curr_layer])
             A[2, :, :, curr_layer] += A[0, :, :, curr_layer]
@@ -275,6 +276,7 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
             A[1, :, :, curr_layer] = np.maximum(0, A[1, :, :, curr_layer])
             A[2, :, :, curr_layer] = np.minimum(cols-1, A[2, :, :, curr_layer])
             A[3, :, :, curr_layer] = np.minimum(rows-1, A[3, :, :, curr_layer])
+
 
             curr_layer += 1
 
@@ -290,7 +292,6 @@ def rpn_to_roi(rpn_layer, regr_layer, C, dim_ordering, use_regr=True, max_boxes=
 
     all_boxes = np.delete(all_boxes, idxs, 0)
     all_probs = np.delete(all_probs, idxs, 0)
-
     result = non_max_suppression_fast(all_boxes, all_probs, overlap_thresh=overlap_thresh, max_boxes=max_boxes)[0]
 
     return result
