@@ -139,9 +139,8 @@ print(('Num test samples {}'.format(len(test_imgs))))
 # groundtruth
 
 data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, image_data_format(), mode='train')
-print('data_gen_train generated')
 data_gen_test = data_generators.get_anchor_gt(test_imgs, classes_count, C, nn.get_img_output_length, image_data_format(), mode='test')
-print('data_gen_test generated')
+
 
 #channels first is for theano backend
 if image_data_format() == 'channels_first':
@@ -281,19 +280,16 @@ for epoch_num in range(num_epochs):
             else:
                 if len(pos_samples) > 0:
                     selected_pos_samples = np.random.choice(pos_samples, C.num_rois//2, replace=False).tolist()
-                    print('selected_pos_samples')
                 else:
                     selected_pos_samples = []
             try:
                 if len(neg_samples) > 0:
                     selected_neg_samples = np.random.choice(neg_samples, C.num_rois - len(selected_pos_samples), replace=False).tolist()
-                    print('selected_neg_samples')
                 else:
                     selected_neg_samples = []
             except:
                 if len(neg_samples) > 0:
                     selected_neg_samples = np.random.choice(neg_samples, C.num_rois - len(selected_pos_samples), replace=True).tolist()
-                    print('selected_neg_samples')
                 else:
                     selected_neg_samples = []
 
@@ -306,8 +302,10 @@ for epoch_num in range(num_epochs):
                 sel_samples = random.choice(neg_samples)
             else:
                 sel_samples = random.choice(pos_samples)
-
+        
+        Y2 = Y2.astype('float32')
         loss_class = model_classifier.train_on_batch([X, X2[:, sel_samples, :]], [Y1[:, sel_samples, :], Y2[:, sel_samples, :]])
+
         write_log(callback, ['detection_cls_loss', 'detection_reg_loss', 'detection_acc'], loss_class, train_step)
         train_step += 1
 
