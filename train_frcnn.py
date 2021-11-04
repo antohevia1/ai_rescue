@@ -315,11 +315,11 @@ for epoch_num in range(num_epochs):
         is_empty1 = tf.equal(tf.size(Y1_index), 0)
         Y2_index = tf.where(Y[1] > 0)
         is_empty2 = tf.equal(tf.size(Y2_index), 0)
+        print(X.shape)
+        print(X2.shape)
+        print(Y1.shape)
+        print(Y2.shape)
         print(img_data['filepath'])
-        print(is_empty)
-        print(is_empty3)
-        print(is_empty1)
-        print(is_empty2)
 
         write_log(callback, ['detection_cls_loss', 'detection_reg_loss', 'detection_acc'], loss_class, train_step)
         train_step += 1
