@@ -208,7 +208,7 @@ callback = tf.summary.create_file_writer(log_path)
 #callback.set_model(model_all)
 
 
-epoch_length = 1000
+epoch_length = 100
 num_epochs = int(options.num_epochs)
 iter_num = 0
 train_step = 0
@@ -243,7 +243,18 @@ for epoch_num in range(num_epochs):
         # data generator X, Y, image
         X, Y, img_data = next(data_gen_train)
 
-        #print(Y.shape)
+        X_index = tf.where(X > 0)
+        is_empty = tf.equal(tf.size(X_index), 0)
+        Y1_index = tf.where(Y[0] > 0)
+        is_empty1 = tf.equal(tf.size(Y1_index), 0)
+        Y2_index = tf.where(Y[1] > 0)
+        is_empty2 = tf.equal(tf.size(Y2_index), 0)
+        print(img_data['filepath'])
+        print(is_empty)
+        print(is_empty1)
+        print(is_empty2)
+        #print(Y[0].shape)
+        #print(Y[1].shape)
 
         loss_rpn = model_rpn.train_on_batch(X, Y)
         write_log(callback, ['rpn_cls_loss', 'rpn_reg_loss'], loss_rpn, train_step)
@@ -302,7 +313,7 @@ for epoch_num in range(num_epochs):
                 sel_samples = random.choice(neg_samples)
             else:
                 sel_samples = random.choice(pos_samples)
-        
+
         Y2 = Y2.astype('float32')
         loss_class = model_classifier.train_on_batch([X, X2[:, sel_samples, :]], [Y1[:, sel_samples, :], Y2[:, sel_samples, :]])
 
