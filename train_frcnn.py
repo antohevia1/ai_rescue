@@ -243,16 +243,7 @@ for epoch_num in range(num_epochs):
         # data generator X, Y, image
         X, Y, img_data = next(data_gen_train)
 
-        X_index = tf.where(X > 0)
-        is_empty = tf.equal(tf.size(X_index), 0)
-        Y1_index = tf.where(Y[0] > 0)
-        is_empty1 = tf.equal(tf.size(Y1_index), 0)
-        Y2_index = tf.where(Y[1] > 0)
-        is_empty2 = tf.equal(tf.size(Y2_index), 0)
-        print(img_data['filepath'])
-        print(is_empty)
-        print(is_empty1)
-        print(is_empty2)
+
         #print(Y[0].shape)
         #print(Y[1].shape)
 
@@ -316,6 +307,19 @@ for epoch_num in range(num_epochs):
 
         Y2 = Y2.astype('float32')
         loss_class = model_classifier.train_on_batch([X, X2[:, sel_samples, :]], [Y1[:, sel_samples, :], Y2[:, sel_samples, :]])
+        X_index = tf.where(X > 0)
+        is_empty = tf.equal(tf.size(X_index), 0)
+        X2_index = tf.where(X2> 0)
+        is_empty3 = tf.equal(tf.size(X2_index), 0)
+        Y1_index = tf.where(Y[0] > 0)
+        is_empty1 = tf.equal(tf.size(Y1_index), 0)
+        Y2_index = tf.where(Y[1] > 0)
+        is_empty2 = tf.equal(tf.size(Y2_index), 0)
+        print(img_data['filepath'])
+        print(is_empty)
+        print(is_empty3)
+        print(is_empty1)
+        print(is_empty2)
 
         write_log(callback, ['detection_cls_loss', 'detection_reg_loss', 'detection_acc'], loss_class, train_step)
         train_step += 1
